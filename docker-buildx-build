@@ -1,0 +1,21 @@
+#!/bin/bash
+
+[ -n "$1" ] && AGENT_VERSION="$1"
+[ -z "$AGENT_VERSION" ] && AGENT_VERSION=4.6-1
+
+REGISTRY=us-docker.pkg.dev
+REPOSITORY=jarvice/images
+IMAGE=jenkins-inbound-agent
+PLATFORMS="linux/amd64"
+
+BUILDER=multiarch
+
+export DOCKER_CLI_EXPERIMENTAL=enabled
+docker buildx build --rm \
+    --builder $BUILDER \
+    --platform $PLATFORMS --push \
+    --build-arg AGENT_VERSION=$AGENT_VERSION \
+    -t $REGISTRY/$REPOSITORY/$IMAGE:${AGENT_VERSION} \
+    --progress plain \
+    -f Dockerfile .
+
