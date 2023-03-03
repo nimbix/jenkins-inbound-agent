@@ -1,4 +1,4 @@
-ARG AGENT_VERSION=4.6-1
+ARG AGENT_VERSION=4.11-1-jdk11
 FROM docker.io/jenkins/inbound-agent:$AGENT_VERSION
 
 USER root
@@ -19,7 +19,7 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | \
         echo "deb [arch=$TARGETARCH signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | \
         tee /etc/apt/sources.list.d/docker.list > /dev/null
 RUN apt-get -y update && \
-    apt-get -y install --no-install-recommends docker-ce-cli make jq expect unzip gnupg bash
+    apt-get -y install --no-install-recommends docker-ce-cli docker-buildx-plugin make jq expect unzip gnupg bash
 
 # Set bash as the default shell
 RUN echo "dash dash/sh boolean false" | debconf-set-selections
@@ -28,10 +28,18 @@ RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
 # Install kubectl
 RUN cd /usr/bin && curl --fail -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/${TARGETPLATFORM:-linux/amd64}/kubectl" && chmod 0555 kubectl
 
+# GCP kubectl auth-plugin
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
+    | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+    | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && \
+    apt-get update -y && \
+    apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
+
 # Install helm
 RUN curl -H 'Cache-Control: no-cache' \
     https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get-helm-3 | \
-    bash -s -- --version v3.2.4
+    bash -s -- --version v3.5.4
 
 # Install terraform
 ENV TF_VER_DEFAULT "1.0.0"
