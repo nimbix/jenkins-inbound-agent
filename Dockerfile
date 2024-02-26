@@ -19,7 +19,8 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | \
         echo "deb [arch=$TARGETARCH signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | \
         tee /etc/apt/sources.list.d/docker.list > /dev/null
 RUN apt-get -y update && \
-    apt-get -y install --no-install-recommends docker-ce-cli docker-buildx-plugin make jq expect unzip gnupg bash
+    apt-get -y install --no-install-recommends docker-ce-cli docker-buildx-plugin make jq expect unzip gnupg bash python3 && \
+    ln -s /usr/bin/python3 /usr/bin/python
 
 # Set bash as the default shell
 RUN echo "dash dash/sh boolean false" | debconf-set-selections
