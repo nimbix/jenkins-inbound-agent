@@ -1,4 +1,4 @@
-ARG AGENT_VERSION=4.11-1-jdk11
+ARG AGENT_VERSION=bookworm-jdk21
 FROM docker.io/jenkins/inbound-agent:$AGENT_VERSION
 
 USER root
