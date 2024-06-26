@@ -40,7 +40,7 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
 # Install helm
 RUN curl -H 'Cache-Control: no-cache' \
     https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get-helm-3 | \
-    bash -s -- --version v3.5.4
+    bash -s -- --version v3.6.3
 
 # Install terraform
 ENV TF_VER_DEFAULT "1.0.0"
