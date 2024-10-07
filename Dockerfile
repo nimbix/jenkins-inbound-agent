@@ -43,7 +43,7 @@ RUN curl -H 'Cache-Control: no-cache' \
     bash -s -- --version v3.6.3
 
 # Install terraform
-ENV TF_VER_DEFAULT "1.0.0"
+ENV TF_VER_DEFAULT "1.5.7"
 ENV TF_VERS "$TF_VER_DEFAULT 0.14.11"
 RUN for tf_ver in $TF_VERS; do curl --silent https://releases.hashicorp.com/terraform/$tf_ver/terraform_${tf_ver}_linux_${TARGETARCH}.zip >/tmp/tf.zip && unzip /tmp/tf.zip -d /usr/local/bin && mv /usr/local/bin/terraform /usr/local/bin/terraform-$tf_ver; done
 RUN ln -s terraform-$TF_VER_DEFAULT /usr/local/bin/terraform
