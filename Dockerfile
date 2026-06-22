@@ -1,4 +1,4 @@
-ARG AGENT_VERSION=bookworm-jdk21
+ARG AGENT_VERSION=trixie-jdk21
 FROM docker.io/jenkins/inbound-agent:$AGENT_VERSION
 
 USER root
@@ -32,15 +32,14 @@ RUN cd /usr/bin && curl --fail -LO "https://dl.k8s.io/release/$(curl -L -s https
 # GCP kubectl auth-plugin
 RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
     | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
-    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-    | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor | tee /usr/share/keyrings/cloud.google.gpg && \
     apt-get update -y && \
     apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
 
 # Install helm
 RUN curl -H 'Cache-Control: no-cache' \
     https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get-helm-3 | \
-    bash -s -- --version v3.6.3
+    bash -s -- --version v3.21.2
 
 # Install terraform
 ENV TF_VER_DEFAULT "1.5.7"
